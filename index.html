@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M-ZERO-MOD: COMMAND CENTER</title>
+    <title>M-ZERO-MOD: 메르센 소수 탐사선</title>
     <style>
         :root {
             --bg: #050505;
@@ -17,14 +17,13 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Segoe UI', Monaco, 'Courier New', monospace;
+            font-family: 'Pretendard', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         .container {
@@ -32,141 +31,126 @@
             max-width: 600px;
             background: var(--panel);
             border: 1px solid var(--border);
-            padding: 30px;
+            padding: 25px;
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
         }
 
         header {
             border-bottom: 2px solid var(--accent);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             padding-bottom: 10px;
         }
 
         h1 {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             margin: 0;
-            letter-spacing: 5px;
             color: var(--accent);
-            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .info-box {
+            background: #111;
+            padding: 15px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--accent);
+            color: #aaa;
         }
 
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
-            font-size: 0.7rem;
-            color: #666;
+            font-size: 0.8rem;
+            color: #888;
             margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         input {
             background: #000;
             color: var(--accent);
             border: 1px solid var(--border);
-            padding: 15px;
-            font-size: 1.5rem;
+            padding: 12px;
+            font-size: 1.2rem;
             width: 100%;
             box-sizing: border-box;
             outline: none;
-            font-family: monospace;
-        }
-
-        input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+            text-align: center;
         }
 
         button {
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 20px;
-            font-size: 1rem;
-            font-weight: 900;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-weight: bold;
             width: 100%;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
             transition: all 0.2s;
         }
 
-        button:hover {
-            filter: brightness(1.2);
-            transform: translateY(-2px);
-        }
-
         button:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
 
         #S {
-            text-align: right;
-            font-size: 0.7rem;
+            text-align: center;
+            font-size: 0.8rem;
             margin: 10px 0;
-            color: #444;
-            font-family: monospace;
+            color: #666;
         }
 
         .progress-container {
             width: 100%;
-            height: 2px;
+            height: 4px;
             background: #111;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         #B {
             background: var(--accent);
             height: 100%;
             width: 0%;
-            box-shadow: 0 0 10px var(--accent);
         }
 
         #O {
             background: #000;
             border: 1px solid var(--border);
             padding: 15px;
-            height: 250px;
+            height: 200px;
             overflow-y: auto;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-family: monospace;
-            line-height: 1.6;
         }
 
         #O div {
-            padding: 5px 0;
+            padding: 6px 0;
             border-bottom: 1px solid #080808;
             color: #888;
         }
 
-        #O div:first-child {
-            color: var(--accent);
-            font-weight: bold;
-        }
-
         .feedback-section {
-            margin-top: 30px;
+            margin-top: 20px;
             display: flex;
-            border: 1px solid var(--border);
         }
 
         #T_IN {
             background: transparent;
-            border: none;
+            border: 1px solid var(--border);
             padding: 10px;
             font-size: 0.8rem;
             flex: 1;
-            margin: 0;
+            text-align: left;
         }
 
         #T_B {
             width: auto;
             padding: 10px 20px;
-            font-size: 0.7rem;
-            margin: 0;
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -174,17 +158,22 @@
 <body>
     <div class="container">
         <header>
-            <h1>M-ZERO-MOD</h1>
+            <h1>메르센 소수 탐사선</h1>
         </header>
+
+        <div class="info-box">
+            <strong>메르센 소수가 뭔가요?</strong><br>
+            2를 여러 번 곱한 뒤 1을 뺀 숫자 중에서, 1과 자기 자신으로만 나누어지는 특별한 숫자를 말해요! 예: (2×2×2)-1 = 7 (소수!)
+        </div>
         
         <div class="input-group">
-            <label>Scan Range Limit</label>
+            <label>어디까지 찾아볼까요? (숫자 입력)</label>
             <input id="I" value="1000" type="number">
         </div>
 
-        <button id="L">Execute Mission</button>
+        <button id="L">탐사 시작하기</button>
         
-        <div id="S">SYSTEM READY</div>
+        <div id="S">시스템 대기 중</div>
         <div class="progress-container">
             <div id="B"></div>
         </div>
@@ -192,8 +181,8 @@
         <div id="O"></div>
         
         <div class="feedback-section">
-            <input id="T_IN" placeholder="TRANSMIT FEEDBACK...">
-            <button id="T_B">SEND</button>
+            <input id="T_IN" placeholder="본부에 메시지 보내기...">
+            <button id="T_B">보내기</button>
         </div>
     </div>
     <script>
