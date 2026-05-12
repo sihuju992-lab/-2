@@ -4,129 +4,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M-ZERO-MOD</title>
+    <title>M-ZERO-MOD: COMMAND CENTER</title>
     <style>
+        :root {
+            --bg: #050505;
+            --panel: #0a0a0a;
+            --accent: #00ff41;
+            --text: #e0e0e0;
+            --border: #1a1a1a;
+        }
+
         body {
-            background: #000;
-            color: #fff;
-            font-family: 'Courier New', monospace;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Monaco, 'Courier New', monospace;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
-            width: 100%;
-            max-width: 500px;
+            width: 90%;
+            max-width: 600px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 30px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
         }
 
         h1 {
-            font-size: 1.5rem;
-            text-align: center;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
+            font-size: 1.2rem;
+            margin: 0;
+            letter-spacing: 5px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.7rem;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         input {
-            background: #111;
-            color: #0f0;
-            border: 1px solid #333;
-            padding: 12px;
-            font-size: 1.2rem;
+            background: #000;
+            color: var(--accent);
+            border: 1px solid var(--border);
+            padding: 15px;
+            font-size: 1.5rem;
             width: 100%;
             box-sizing: border-box;
-            margin-bottom: 10px;
-            text-align: center;
+            outline: none;
+            font-family: monospace;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
         }
 
         button {
-            background: #fff;
+            background: var(--accent);
             color: #000;
             border: none;
-            padding: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            padding: 20px;
+            font-size: 1rem;
+            font-weight: 900;
             width: 100%;
             cursor: pointer;
-            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            filter: brightness(1.2);
+            transform: translateY(-2px);
         }
 
         button:active {
-            background: #ccc;
+            transform: translateY(0);
         }
 
         #S {
-            text-align: center;
-            font-size: 1rem;
-            margin-bottom: 10px;
-            color: #aaa;
+            text-align: right;
+            font-size: 0.7rem;
+            margin: 10px 0;
+            color: #444;
+            font-family: monospace;
         }
 
         .progress-container {
             width: 100%;
-            height: 4px;
-            background: #222;
-            margin-bottom: 20px;
+            height: 2px;
+            background: #111;
+            margin-bottom: 30px;
         }
 
         #B {
-            background: #0f0;
+            background: var(--accent);
             height: 100%;
             width: 0%;
-            transition: width 0.1s;
+            box-shadow: 0 0 10px var(--accent);
         }
 
         #O {
-            background: #050505;
-            border: 1px solid #111;
-            padding: 10px;
-            height: 300px;
+            background: #000;
+            border: 1px solid var(--border);
+            padding: 15px;
+            height: 250px;
             overflow-y: auto;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            font-family: monospace;
+            line-height: 1.6;
         }
 
         #O div {
-            padding: 8px 0;
-            border-bottom: 1px solid #111;
-            color: #0f0;
+            padding: 5px 0;
+            border-bottom: 1px solid #080808;
+            color: #888;
+        }
+
+        #O div:first-child {
+            color: var(--accent);
+            font-weight: bold;
         }
 
         .feedback-section {
             margin-top: 30px;
             display: flex;
-            gap: 5px;
+            border: 1px solid var(--border);
         }
 
         #T_IN {
+            background: transparent;
+            border: none;
+            padding: 10px;
+            font-size: 0.8rem;
             flex: 1;
-            margin-bottom: 0;
-            font-size: 0.9rem;
+            margin: 0;
         }
 
         #T_B {
             width: auto;
-            margin-bottom: 0;
             padding: 10px 20px;
-            font-size: 0.9rem;
+            font-size: 0.7rem;
+            margin: 0;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>M-ZERO-MOD</h1>
-        <input id="I" value="1000" type="number">
-        <button id="L">LAUNCH EXPLORER</button>
-        <div id="S">SYSTEM IDLE</div>
+        <header>
+            <h1>M-ZERO-MOD</h1>
+        </header>
+        
+        <div class="input-group">
+            <label>Scan Range Limit</label>
+            <input id="I" value="1000" type="number">
+        </div>
+
+        <button id="L">Execute Mission</button>
+        
+        <div id="S">SYSTEM READY</div>
         <div class="progress-container">
             <div id="B"></div>
         </div>
+        
         <div id="O"></div>
+        
         <div class="feedback-section">
-            <input id="T_IN" placeholder="FEEDBACK TO BASE">
+            <input id="T_IN" placeholder="TRANSMIT FEEDBACK...">
             <button id="T_B">SEND</button>
         </div>
     </div>
@@ -226,13 +292,13 @@
             return s === 0n;
         };
 
-        let S = $('S'), O_UI = $('O'), B = $('B'), y = $('y'), TI = $('T_IN'), TB = $('T_B');
+        let S = $('S'), O_UI = $('O'), B = $('B'), TI = $('T_IN'), TB = $('T_B');
 
         const scan = (p, max) => {
             let start = N();
             while (N() < start + 20) {
                 if (p > max) {
-                    R = false; S.innerText = "완료!";
+                    R = false; S.innerText = "MISSION COMPLETE";
                     return;
                 }
                 if (isP(p)) {
@@ -255,7 +321,7 @@
             let val = $('I').value;
             let max = BigInt(val || 1000);
             if (max < 2n) return;
-            R = true; S.innerText = "출발!";
+            R = true; S.innerText = "SCANNING...";
             O_UI.innerHTML = "";
             rL = [];
             scan(2n, max);
