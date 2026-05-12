@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>M-ZERO-MOD</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: monospace;
+        }
+
+        #B {
+            background: #fff;
+            height: 2px;
+        }
+
+        #O div {
+            padding: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="I" value="1000">
+    <button id="L">LAUNCH</button>
+    <div id="S">IDLE</div>
+    <div style="display:flex;height:2px">
+        <div id="B"></div>
+        <div id="y" style="flex:1"></div>
+    </div>
+    <div id="O"></div>
+    <div style="margin-top:20px;padding-top:10px;">
+        <input id="T_IN" placeholder="FEEDBACK">
+        <button id="T_B">SEND</button>
+    </div>
+    <script>
+        let R = false, rL = [];
+        const h = new MessageChannel();
+        const $ = id => document.getElementById(id), N = () => performance.now();
+        function Y(t) { h.port1.onmessage = t; h.port2.postMessage(0); }
+
+        const dm = (a, b) => {
+            let q = 0n, r = 0n;
+            if (a === 0n) return { q: 0n, r: 0n };
+            let len = BigInt(a.toString(2).length);
+            let i = U(len, 1n);
+            while (true) {
+                r = A(r << 1n, (a >> i) & 1n);
+                if (r >= b) { r = U(r, b); q |= (1n << i); }
+                if (i === 0n) break;
+                i = U(i, 1n);
+            }
+            return { q, r };
+        };
+
+        const O = (a, b) => dm(a, b).r;
+
+        const isP = (n) => {
+            if (n < 2n) return false;
+            if (n === 2n || n === 3n) return true;
+            if ((n & 1n) === 0n || O(n, 3n) === 0n) return false;
+            let lim = BigInt(Math.floor(Math.sqrt(Number(n))));
+            for (let i = 5n; i <= lim; i = A(i, 6n)) {
+                if (O(n, i) === 0n || O(n, A(i, 2n)) === 0n) return false;
+            }
+            return true;
+        };
+
+        const A = (a, b) => { while (b !== 0n) { let c = (a & b) << 1n; a ^= b; b = c; } return a; };
+        const U = (a, b) => { while (b !== 0n) { let c = (~a & b) << 1n; a ^= b; b = c; } return a; };
+        const M = (a, b) => { let r = 0n; while (b !== 0n) { if (b & 1n) r = A(r, a); a <<= 1n; b >>= 1n; } return r; };
+
+        const Q = 998244353n, G = 3n;
+        const subP = (a, b) => { let c = A(a, U(Q, b)); return c >= Q ? U(c, Q) : c; };
+        const mulP = (a, b) => dm(M(a, b), Q).r;
+        const powP = (a, b) => { let r = 1n; while (b > 0n) { if (b & 1n) r = mulP(r, a); a = mulP(a, a); b >>= 1n; } return r; };
+        const rev = (i, n) => { let r = 0n; for (let j = 0n; j < n; j = A(j, 1n)) if ((i >> j) & 1n) r = A(r, 1n << U(U(n, 1n), j)); return r; };
+        const NTT = (A_a, inv) => {
+            let n = BigInt(A_a.length), k = U(BigInt(n.toString(2).length), 1n);
+            for (let i = 0n; i < n; i = A(i, 1n)) { let r = rev(i, k); if (i < r) { let t = A_a[Number(i)]; A_a[Number(i)] = A_a[Number(r)]; A_a[Number(r)] = t; } }
+            for (let l = 2n; l <= n; l <<= 1n) {
+                let h = l >> 1n, w_l = powP(G, dm(U(Q, 1n), l).q);
+                if (inv) w_l = powP(w_l, U(Q, 2n));
+                for (let i = 0n; i < n; i = A(i, l)) {
+                    let w = 1n;
+                    for (let j = 0n; j < h; j = A(j, 1n)) {
+                        let u = A_a[Number(A(i, j))], v = mulP(A_a[Number(A(A(i, h), j))], w);
+                        let su = A(u, v);
+                        A_a[Number(A(i, j))] = su >= Q ? U(su, Q) : su;
+                        A_a[Number(A(A(i, h), j))] = subP(u, v);
+                        w = mulP(w, w_l);
+                    }
+                }
+            }
+            if (inv) { let iN = powP(n, U(Q, 2n)); for (let i = 0n; i < n; i = A(i, 1n)) A_a[Number(i)] = mulP(A_a[Number(i)], iN); }
+        };
+        const NTT_mul = (a, b) => {
+            if (a < 256n || b < 256n) return M(a, b);
+            let Aa = [], Ba = [];
+            while (a > 0n) { Aa.push(a & 255n); a >>= 8n; }
+            while (b > 0n) { Ba.push(b & 255n); b >>= 8n; }
+            let len = 1n, rq = BigInt(Aa.length + Ba.length);
+            while (len < rq) len <<= 1n;
+            while (Aa.length < Number(len)) Aa.push(0n);
+            while (Ba.length < Number(len)) Ba.push(0n);
+            NTT(Aa, false); NTT(Ba, false);
+            let Ca = [];
+            for (let i = 0n; i < len; i = A(i, 1n)) Ca.push(mulP(Aa[Number(i)], Ba[Number(i)]));
+            NTT(Ca, true);
+            let r = 0n, c = 0n, s = 0n, cl = BigInt(Ca.length);
+            for (let i = 0n; i < cl; i = A(i, 1n)) {
+                let v = A(Ca[Number(i)], c);
+                r = A(r, (v & 255n) << s);
+                c = v >> 8n;
+                s = A(s, 8n);
+            }
+            while (c > 0n) { r = A(r, (c & 255n) << s); c >>= 8n; s = A(s, 8n); }
+            return r;
+        };
+
+        const C = (p) => {
+            if (p === 2n) return true;
+            let m = U(1n << p, 1n), s = 4n;
+            for (let i = 0n; i < U(p, 2n); i = A(i, 1n)) {
+                s = U(NTT_mul(s, s), 2n);
+                s = A(s & m, s >> p);
+                if (s >= m) s = U(s, m);
+            }
+            return s === 0n;
+        };
+
+        let S = $('S'), O_UI = $('O'), B = $('B'), y = $('y'), TI = $('T_IN'), TB = $('T_B');
+
+        const scan = (p, max) => {
+            let start = N();
+            while (N() < start + 20) {
+                if (p > max) {
+                    R = false; S.innerText = "완료!";
+                    return;
+                }
+                if (isP(p)) {
+                    if (C(p)) {
+                        let txt = `[PRIME] 2^${p}-1`;
+                        rL.push(txt);
+                        let d = document.createElement('div');
+                        d.innerText = txt;
+                        O_UI.prepend(d);
+                    }
+                }
+                p = A(p, 1n);
+                B.style.width = Number(dm(NTT_mul(p, 100n), max).q) + "%";
+            }
+            Y(() => scan(p, max));
+        };
+
+        $('L').onclick = () => {
+            if (R) return;
+            let val = $('I').value;
+            let max = BigInt(val || 1000);
+            if (max < 2n) return;
+            R = true; S.innerText = "출발!";
+            O_UI.innerHTML = "";
+            rL = [];
+            scan(2n, max);
+        };
+        TB.onclick = () => {
+            if (!TI.value) return;
+            let arr = JSON.parse(localStorage.getItem('enrage1729') || '[]');
+            arr.unshift(`[FEEDBACK] ${TI.value}`);
+            localStorage.setItem('enrage1729', JSON.stringify(arr));
+            TI.value = '';
+        };
+    </script>
+
+</body>
+
+</html>

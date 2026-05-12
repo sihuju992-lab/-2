@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>1729 FEEDBACK CENTER</title>
+    <style>
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            padding: 20px;
+        }
+        h1 {
+            color: #fff;
+            border-bottom: 2px solid #fff;
+            padding-bottom: 10px;
+        }
+        #log div {
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 ENRAGE THE 1729 (피드백 수신 센터)</h1>
+    <p>메르센 엔진에서 보내는 모든 피드백이 이 비밀 기지로 전송됩니다.</p>
+    <button onclick="localStorage.setItem('enrage1729', '[]'); update();">CLEAR FEEDBACK</button>
+    <div id="log" style="margin-top:20px;"></div>
+
+    <script>
+        const log = document.getElementById('log');
+        const update = () => {
+            let arr = JSON.parse(localStorage.getItem('enrage1729') || '[]');
+            log.innerHTML = arr.map(t => `<div>${t}</div>`).join('');
+        };
+        
+        // 처음 열었을 때 한 번 읽어오기
+        update();
+        
+        // 메인 화면(index.html)에서 SEND를 누르면 자동으로 화면 업데이트!
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'enrage1729') update();
+        });
+    </script>
+</body>
+</html>
